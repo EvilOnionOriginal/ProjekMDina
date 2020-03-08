@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Data.SqlClient;
 
 namespace ProjekMDina
 {
@@ -18,32 +20,52 @@ namespace ProjekMDina
             InitializeComponent();
         }
 
+        public SqlCommand comm;
+        public SqlConnection con;
+        DataSet
+
         private void newPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var fileContent = string.Empty;
             var filePath = string.Empty;
 
-            
-
-            OpenFileDialog open = new OpenFileDialog();
-            open.InitialDirectory = "c:\\";
-            open.Filter = "All files (*.*)|*.*";
-            open.FilterIndex = 2;
-            open.RestoreDirectory = true;
-
-            if (open.ShowDialog() == DialogResult.OK)
+            using (var open = new FolderBrowserDialog()) 
             {
-                //Get the path of specified file
-                filePath = open.FileName;
-
-                //Read the contents of the file into a stream
-                var fileStream = open.OpenFile();
-
-                using (StreamReader reader = new StreamReader(fileStream))
+                if (open.ShowDialog() == DialogResult.OK)
                 {
-                    // fileContent = reader.ReadToEnd();
+                    //Get the path of specified file
+                    
+                    filePath = open.SelectedPath;
+
+                    MettadataGet mettadata = new MettadataGet();
+
+                    foreach (string dirPath in Directory.GetDirectories(filePath))
+                    {
+                        mettadata.DoStuff(filePath);
+                    }
+
                 }
             }
+
+            
+        }
+
+        public void ConnectToDB()
+        { 
+            
+        }
+
+        private void viewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            View view = new View();
+            view.Show();
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Edit edit = new Edit();
+            edit.Show();
         }
     }
 }
+
